@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#050505" />
+  <title>招財金手指｜Lucky Gold Finger</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <section class="stage" id="stage">
+      <canvas id="threeCanvas" aria-label="3D golden particle field"></canvas>
+      <canvas id="drawCanvas" aria-label="golden finger drawing canvas"></canvas>
+
+      <div class="noise"></div>
+      <div class="vignette"></div>
+      <div class="wealth-ring" id="wealthRing"></div>
+
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark">金</span>
+          <div>
+            <p>LUCKY GOLD FINGER</p>
+            <small>單手招財互動體驗</small>
+          </div>
+        </div>
+        <div class="mode-pill" id="modePill">Fallback Ready</div>
+      </header>
+
+      <section class="hero-panel">
+        <p class="eyebrow">One Hand Wealth Interaction</p>
+        <h1>用一隻手，畫出你的招財金圈。</h1>
+        <p class="lead">
+          伸出食指畫圈，金色粒子會跟住你的手指流動。畫成一個圓後，啟動「招財光圈」。
+        </p>
+
+        <div class="actions">
+          <button class="primary-btn" id="cameraBtn" type="button">開啟鏡頭手勢</button>
+          <button class="ghost-btn" id="fallbackBtn" type="button">用滑鼠 / 觸控玩</button>
+        </div>
+
+        <div class="instruction-grid">
+          <div>
+            <span>01</span>
+            <strong>Pointing Up</strong>
+            <p>伸出食指，畫出金色軌跡。</p>
+          </div>
+          <div>
+            <span>02</span>
+            <strong>畫圓</strong>
+            <p>完成金圈，觸發招財光圈。</p>
+          </div>
+          <div>
+            <span>03</span>
+            <strong>Open Palm</strong>
+            <p>金幣爆發，財氣擴散。</p>
+          </div>
+          <div>
+            <span>04</span>
+            <strong>Closed Fist</strong>
+            <p>鎖住財氣，粒子聚合。</p>
+          </div>
+        </div>
+      </section>
+
+      <aside class="hud-panel">
+        <div class="camera-card">
+          <video id="webcam" autoplay playsinline muted></video>
+          <canvas id="handCanvas"></canvas>
+          <div class="camera-placeholder" id="cameraPlaceholder">
+            Camera preview<br />未啟動
+          </div>
+        </div>
+
+        <div class="stat-row">
+          <span>狀態</span>
+          <strong id="statusText">已準備，可用觸控 / 滑鼠先試玩</strong>
+        </div>
+        <div class="stat-row">
+          <span>手勢</span>
+          <strong id="gestureText">--</strong>
+        </div>
+        <div class="stat-row">
+          <span>Wealth Energy</span>
+          <strong><span id="wealthText">8</span>%</strong>
+        </div>
+        <div class="stat-row">
+          <span>Coins Collected</span>
+          <strong id="coinText">0</strong>
+        </div>
+
+        <div class="meter" aria-label="wealth energy meter">
+          <div id="wealthBar"></div>
+        </div>
+
+        <div class="diagnostics" id="diagnostics">
+          <p>相機檢查：</p>
+          <ul id="diagList"></ul>
+        </div>
+      </aside>
+
+      <div class="result-card" id="resultCard" role="status" aria-live="polite">
+        <p>招財光圈已啟動</p>
+        <h2 id="resultTitle">財氣正在靠近你</h2>
+        <span id="resultNote">本互動只作娛樂及視覺展示用途。</span>
+      </div>
+
+      <div class="bottom-note">
+        Camera 失敗時仍可用滑鼠 / 手指觸控操作。正式發布請用 HTTPS，例如 GitHub Pages。
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
