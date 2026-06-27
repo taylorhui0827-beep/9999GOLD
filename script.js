@@ -2,7 +2,7 @@ import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.m
 import {
   HandLandmarker,
   FilesetResolver
-} from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22";
+} from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.35/vision_bundle.mjs";
 
 const cameraBtn = document.getElementById("cameraBtn");
 const fallbackBtn = document.getElementById("fallbackBtn");
@@ -423,7 +423,7 @@ async function startCameraMode() {
 
 async function createHandLandmarkerWithFallback() {
   const vision = await FilesetResolver.forVisionTasks(
-    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/wasm"
+    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.35/wasm"
   );
 
   const options = {
