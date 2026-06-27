@@ -1,18 +1,18 @@
-# 招財金手指 Lucky Gold Finger
+# 招財金手指
 
-單手操作的 Black Gold Luxury 3D 粒子互動網站。
+單手操作的黑金奢華三維粒子互動網站。
 
 ## 功能
 
 - 單手鏡頭辨識
 - 食指畫金色軌跡
 - 畫圓啟動招財光圈
-- Open Palm：金幣擴散
-- Closed Fist：粒子收縮，鎖住財氣
-- Pinch：吸金
-- Thumb Up：Rich Mode 金幣爆發
-- 3D 黃金粒子場
-- 電腦 / 手機 responsive
+- 張開手掌：金幣擴散
+- 握拳：粒子收縮，鎖住財氣
+- 捏合：吸金
+- 讚好手勢：暴富模式金幣爆發
+- 三維黃金粒子場
+- 電腦 / 手機自適應版面
 - 相機失敗時自動切換到滑鼠 / 觸控模式
 
 ## 使用方法
@@ -21,20 +21,20 @@
 
 建議用 VS Code + Live Server。
 
-不要直接雙擊 index.html，因為瀏覽器可能不允許本機 file:// 使用 camera。
+不要直接雙擊 index.html，因為瀏覽器可能不允許本機 file:// 使用相機。
 
 ### GitHub Pages
 
-1. 建立 GitHub repository
-2. 上傳 index.html、style.css、script.js、README.md 到 repository 最外層
-3. Settings → Pages
-4. Source 選 Deploy from a branch
-5. Branch 選 main / root
-6. 等 GitHub Pages 生成 HTTPS 網址
+1. 建立 GitHub 儲存庫
+2. 上傳 index.html、style.css、script.js、README.md 到儲存庫最外層
+3. 設定 → Pages
+4. 來源選「由分支部署」
+5. 分支選 main / root
+6. 等待 GitHub Pages 生成 HTTPS 網址
 
 ## 相機權限
 
-相機模式需要 HTTPS 或 localhost。
+相機模式需要 HTTPS 或本機 localhost。
 
 如果相機不能開，網站仍可用滑鼠 / 手指觸控操作。
 

@@ -74,8 +74,8 @@ function initDiagnostics() {
   const hasMedia = Boolean(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
   const isHttps = location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1";
 
-  lines.push(`${secure ? "✅" : "⚠️"} Secure context：${secure ? "可以使用鏡頭" : "需要 HTTPS 或 localhost"}`);
-  lines.push(`${hasMedia ? "✅" : "⚠️"} Browser camera API：${hasMedia ? "支援" : "不支援 / 被封鎖"}`);
+  lines.push(`${secure ? "✅" : "⚠️"} 安全環境：${secure ? "可以使用鏡頭" : "需要 HTTPS 或 localhost"}`);
+  lines.push(`${hasMedia ? "✅" : "⚠️"} 瀏覽器鏡頭功能：${hasMedia ? "支援" : "不支援 / 被封鎖"}`);
   lines.push(`${isHttps ? "✅" : "⚠️"} 網址環境：${isHttps ? "合適" : "請用 GitHub Pages / Live Server"}`);
 
   diagList.innerHTML = lines.map((line) => `<li>${line}</li>`).join("");
@@ -306,7 +306,7 @@ function detectCircleGesture() {
     triggerWealthRing(cx, cy);
     increaseWealth(18);
     emitCoins(cx, cy, 40);
-    showResult("招財光圈已完成", "你剛剛畫出完整金圈，Money Magnet 已啟動。");
+    showResult("招財光圈已完成", "你剛剛畫出完整金圈，招財磁場已啟動。");
   }
 }
 
@@ -371,8 +371,10 @@ function updateCoins() {
 
 async function startCameraMode() {
   fallbackMode = false;
-  modePill.textContent = "Loading Camera";
-  setStatus("正在載入手部模型...");
+  modePill.textContent = "正在請求相機權限";
+  setStatus("正在向瀏覽器請求相機權限...");
+
+  let stream = null;
 
   try {
     if (!window.isSecureContext) {
@@ -383,23 +385,9 @@ async function startCameraMode() {
       throw new Error("NO_CAMERA_API");
     }
 
-    if (!handLandmarker) {
-      const vision = await FilesetResolver.forVisionTasks(
-        "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/wasm"
-      );
-
-      handLandmarker = await HandLandmarker.createFromOptions(vision, {
-        baseOptions: {
-          modelAssetPath:
-            "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task",
-          delegate: "GPU"
-        },
-        runningMode: "VIDEO",
-        numHands: 1
-      });
-    }
-
-    const stream = await navigator.mediaDevices.getUserMedia({
+    // 先請求相機，再載入 AI 手部模型。
+    // 這樣就算 MediaPipe / CDN / GPU 載入失敗，瀏覽器都會先彈出相機權限提示。
+    stream = await navigator.mediaDevices.getUserMedia({
       video: {
         facingMode: "user",
         width: { ideal: 960 },
@@ -412,13 +400,53 @@ async function startCameraMode() {
     await webcam.play();
     webcam.classList.add("is-live");
     cameraPlaceholder.classList.add("hidden");
+
+    modePill.textContent = "正在載入手勢模型";
+    setStatus("相機已啟動，正在載入手勢辨識模型...");
+
+    if (!handLandmarker) {
+      handLandmarker = await createHandLandmarkerWithFallback();
+    }
+
     cameraRunning = true;
-    modePill.textContent = "Camera Mode";
+    modePill.textContent = "相機模式";
     setStatus("鏡頭已啟動。伸出食指開始畫金圈。");
   } catch (error) {
     console.error(error);
     cameraRunning = false;
+
+    // 如果相機已經成功開啟，但模型載入失敗，保留鏡頭預覽，並轉觸控 / 滑鼠模式。
+    // 如果相機本身失敗，直接轉觸控 / 滑鼠模式。
     activateFallbackMode(getCameraErrorMessage(error));
+  }
+}
+
+async function createHandLandmarkerWithFallback() {
+  const vision = await FilesetResolver.forVisionTasks(
+    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/wasm"
+  );
+
+  const options = {
+    baseOptions: {
+      modelAssetPath:
+        "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task",
+      delegate: "GPU"
+    },
+    runningMode: "VIDEO",
+    numHands: 1
+  };
+
+  try {
+    return await HandLandmarker.createFromOptions(vision, options);
+  } catch (gpuError) {
+    console.warn("GPU hand model failed. Retrying with CPU.", gpuError);
+    options.baseOptions.delegate = "CPU";
+    try {
+      return await HandLandmarker.createFromOptions(vision, options);
+    } catch (cpuError) {
+      console.error("CPU hand model also failed.", cpuError);
+      throw new Error("MODEL_LOAD_FAILED");
+    }
   }
 }
 
@@ -433,8 +461,12 @@ function getCameraErrorMessage(error) {
     return "這個瀏覽器不支援鏡頭 API。已切換到觸控模式。";
   }
 
+  if (name === "MODEL_LOAD_FAILED") {
+    return "相機已開啟，但手勢模型載入失敗。通常是網絡封鎖模型檔、CDN 載入失敗，或瀏覽器不支援。已切換到觸控模式。";
+  }
+
   if (name === "NotAllowedError" || name === "PermissionDeniedError") {
-    return "鏡頭權限被拒絕。請按網址旁邊的鎖頭允許 Camera。已切換到觸控模式。";
+    return "鏡頭權限被拒絕。請按網址旁邊的鎖頭允許相機。已切換到觸控模式。";
   }
 
   if (name === "NotFoundError" || name === "DevicesNotFoundError") {
@@ -450,9 +482,9 @@ function getCameraErrorMessage(error) {
 
 function activateFallbackMode(message) {
   fallbackMode = true;
-  modePill.textContent = "Touch / Mouse Mode";
+  modePill.textContent = "觸控／滑鼠模式";
   setStatus(message);
-  gestureText.textContent = "Touch / Mouse";
+  gestureText.textContent = "觸控／滑鼠";
   fingerScreen.active = true;
   fingerNDC.active = true;
 
@@ -475,7 +507,7 @@ function handlePointerMove(event) {
   rotationTargetX = (x / window.innerWidth - 0.5) * 1.8;
   rotationTargetY = (y / window.innerHeight - 0.5) * 0.8;
   coreScale = 0.92 + Math.max(0, 1 - y / window.innerHeight) * 0.16;
-  setGesture("Gold Finger Drawing");
+  setGesture("招財金手指：畫線");
   if (Math.random() > 0.82) emitCoins(x, y, 1);
 }
 
@@ -553,27 +585,27 @@ function classifyGesture(lm) {
   const fingersFolded = !indexExtended && !middleExtended && !ringExtended && !pinkyExtended;
 
   if (pinchDistance < 0.055) {
-    return { type: "pinch", label: "Pinch：吸金", isDrawing: true };
+    return { type: "pinch", label: "捏合：吸金", isDrawing: true };
   }
 
   if (thumbHigh && fingersFolded) {
-    return { type: "thumb", label: "Thumb Up：Rich Mode", isDrawing: false };
+    return { type: "thumb", label: "讚好手勢：暴富模式", isDrawing: false };
   }
 
   if (extendedCount >= 4) {
-    return { type: "open", label: "Open Palm：金幣擴散", isDrawing: false };
+    return { type: "open", label: "張開手掌：金幣擴散", isDrawing: false };
   }
 
   if (extendedCount <= 1 && !indexExtended) {
-    return { type: "fist", label: "Closed Fist：鎖住財氣", isDrawing: false };
+    return { type: "fist", label: "握拳：鎖住財氣", isDrawing: false };
   }
 
   if (indexExtended && !middleExtended && !ringExtended && !pinkyExtended) {
-    return { type: "point", label: "Pointing Up：招財金手指", isDrawing: true };
+    return { type: "point", label: "伸出食指：招財金手指", isDrawing: true };
   }
 
   if (indexExtended) {
-    return { type: "draw", label: "Gold Finger Drawing", isDrawing: true };
+    return { type: "draw", label: "招財金手指：畫線", isDrawing: true };
   }
 
   return { type: "idle", label: "手勢待命", isDrawing: false };
@@ -612,7 +644,7 @@ function triggerRichMode(indexTip) {
   triggerWealthRing(x, y);
   increaseWealth(22);
   increaseCoins(88);
-  showResult("Rich Mode Activated", "金色爆發已啟動。今日財運能量上升。");
+  showResult("暴富模式已啟動", "金色爆發已啟動。今日財運能量上升。");
 }
 
 function drawHandSkeleton(lm) {

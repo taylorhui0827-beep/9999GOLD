@@ -4,14 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#050505" />
-  <title>招財金手指｜Lucky Gold Finger</title>
+  <title>招財金手指</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <main class="app-shell">
     <section class="stage" id="stage">
-      <canvas id="threeCanvas" aria-label="3D golden particle field"></canvas>
-      <canvas id="drawCanvas" aria-label="golden finger drawing canvas"></canvas>
+      <canvas id="threeCanvas" aria-label="三維黃金粒子場"></canvas>
+      <canvas id="drawCanvas" aria-label="招財金手指繪畫畫布"></canvas>
 
       <div class="noise"></div>
       <div class="vignette"></div>
@@ -21,15 +21,15 @@
         <div class="brand">
           <span class="brand-mark">金</span>
           <div>
-            <p>LUCKY GOLD FINGER</p>
+            <p>招財金手指</p>
             <small>單手招財互動體驗</small>
           </div>
         </div>
-        <div class="mode-pill" id="modePill">Fallback Ready</div>
+        <div class="mode-pill" id="modePill">後備模式已準備</div>
       </header>
 
       <section class="hero-panel">
-        <p class="eyebrow">One Hand Wealth Interaction</p>
+        <p class="eyebrow">單手招財互動體驗</p>
         <h1>用一隻手，畫出你的招財金圈。</h1>
         <p class="lead">
           伸出食指畫圈，金色粒子會跟住你的手指流動。畫成一個圓後，啟動「招財光圈」。
@@ -43,7 +43,7 @@
         <div class="instruction-grid">
           <div>
             <span>01</span>
-            <strong>Pointing Up</strong>
+            <strong>伸出食指</strong>
             <p>伸出食指，畫出金色軌跡。</p>
           </div>
           <div>
@@ -53,12 +53,12 @@
           </div>
           <div>
             <span>03</span>
-            <strong>Open Palm</strong>
+            <strong>張開手掌</strong>
             <p>金幣爆發，財氣擴散。</p>
           </div>
           <div>
             <span>04</span>
-            <strong>Closed Fist</strong>
+            <strong>握拳</strong>
             <p>鎖住財氣，粒子聚合。</p>
           </div>
         </div>
@@ -69,7 +69,7 @@
           <video id="webcam" autoplay playsinline muted></video>
           <canvas id="handCanvas"></canvas>
           <div class="camera-placeholder" id="cameraPlaceholder">
-            Camera preview<br />未啟動
+            鏡頭預覽<br />未啟動
           </div>
         </div>
 
@@ -82,15 +82,15 @@
           <strong id="gestureText">--</strong>
         </div>
         <div class="stat-row">
-          <span>Wealth Energy</span>
+          <span>財氣能量</span>
           <strong><span id="wealthText">8</span>%</strong>
         </div>
         <div class="stat-row">
-          <span>Coins Collected</span>
+          <span>已收集金幣</span>
           <strong id="coinText">0</strong>
         </div>
 
-        <div class="meter" aria-label="wealth energy meter">
+        <div class="meter" aria-label="財氣能量計">
           <div id="wealthBar"></div>
         </div>
 
@@ -107,7 +107,7 @@
       </div>
 
       <div class="bottom-note">
-        Camera 失敗時仍可用滑鼠 / 手指觸控操作。正式發布請用 HTTPS，例如 GitHub Pages。
+        相機失敗時仍可用滑鼠 / 手指觸控操作。正式發布請用 HTTPS，例如 GitHub Pages。
       </div>
     </section>
   </main>
